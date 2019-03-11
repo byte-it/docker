@@ -2,6 +2,7 @@ FROM php:7.1-cli
 LABEl maintainer="Johannes Kees <johannes@lets-byte.it>"
 
 RUN apt-get update && apt-get install -y \
+        git \
         libpq-dev \
         zlib1g-dev \
         libzip-dev \
