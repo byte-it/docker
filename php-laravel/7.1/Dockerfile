@@ -1,8 +1,9 @@
-FROM php:7.1-cli
+FROM php:7.1-fpm
 LABEL maintainer="Johannes Kees <johannes@lets-byte.it>"
 
+EXPOSE 80
+
 RUN apt-get update && apt-get install -y \
-        git \
         libpq-dev \
         zlib1g-dev \
         libzip-dev \
@@ -15,9 +16,14 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install  mbstring \
     && docker-php-ext-install  zip
 
-ENV COMPOSER_HOME /composer
-ENV COMPOSER_ALLOW_SUPERUSER 1
-ENV COMPOSER_NO_INTERACTION 1
-ENV PATH ./vendor/bin:/composer/vendor/bin:$PATH
+RUN rm /etc/nginx/sites-enabled/default
 
-RUN curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+COPY ./nginx-default.conf /etc/nginx/conf.d/default.conf
+COPY ./fpm.conf /usr/local/etc/php-fpm.d/www.conf
+
+COPY ./docker-entrypoint.sh /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["php-fpm"]

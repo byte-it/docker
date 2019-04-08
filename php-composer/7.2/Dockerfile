@@ -1,5 +1,5 @@
 FROM php:7.2-cli
-LABEl maintainer="Johannes Kees <johannes@lets-byte.it>"
+LABEL maintainer="Johannes Kees <johannes@lets-byte.it>"
 
 RUN apt-get update && apt-get install -y \
         git \

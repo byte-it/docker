@@ -1,0 +1,97 @@
+stages:
+- build
+image: docker:latest
+cache: {}
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+services:
+- docker:dind
+before_script:
+- docker login -u gitlab-ci-token -p $CI_JOB_TOKEN ${CI_REGISTRY}
+
+
+
+.base:
+  script: &build_script
+  - cd ${IMAGE_NAME}/
+  - docker build -t ${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${TAG} -f ${TAG}/Dockerfile .
+  - docker push ${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${TAG}
+
+# Composer images
+
+.base:php-composer: &php_composer
+  script: *build_script
+  stage: build
+  only:
+    changes:
+    - 'php-composer/**/*'
+
+php-composer:71:
+  <<: *php_composer
+  variables:
+    IMAGE_NAME: "php-composer"
+    TAG: "7.1"
+
+php-composer:72:
+  <<: *php_composer
+  variables:
+    IMAGE_NAME: "php-composer"
+    TAG: "7.2"
+php-composer:73:
+  <<: *php_composer
+  variables:
+    IMAGE_NAME: "php-composer"
+    TAG: "7.3"
+
+# Laravel images
+
+.base:php-laravel: &php_laravel
+  script: *build_script
+  stage: build
+  only:
+    changes:
+    - 'php-laravel/**/*'
+
+php-laravel:71:
+  <<: *php_laravel
+  variables:
+    IMAGE_NAME: "php-laravel"
+    TAG: "7.1"
+php-laravel:72:
+  <<: *php_laravel
+  variables:
+    IMAGE_NAME: "php-laravel"
+    TAG: "7.2"
+php-laravel:73:
+  <<: *php_laravel
+  variables:
+    IMAGE_NAME: "php-laravel"
+    TAG: "7.3"
+
+# Bedrock images
+.base:php-wp-bedrock: &php_wp_bedrock
+  script: *build_script
+  stage: build
+  only:
+   changes:
+   - 'php-wp-bedrock/**/*'
+
+php-wp-bedrock:71:
+  <<: *php_wp_bedrock
+  variables:
+    IMAGE_NAME: "php-wp-bedrock"
+    TAG: "7.1"
+php-wp-bedrock:72:
+  <<: *php_wp_bedrock
+  variables:
+    IMAGE_NAME: "php-wp-bedrock"
+    TAG: "7.2"
+php-wp-bedrock:73:
+  <<: *php_wp_bedrock
+  variables:
+    IMAGE_NAME: "php-wp-bedrock"
+    TAG: "7.3"
+
+
+
