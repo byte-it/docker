@@ -23,7 +23,8 @@ wp transient delete --all --allow-root
 # @TODO: Clear Super-Cache
 # @TODO: Clear Twig-Cache
 
-# @TODO: Run the Country-Pages-Generator Command here
+# Generate the Country-Page Skeletons in WordPress, if they're not already there
+php bin/console country-pages:generate
 
 # Start nginx
 service nginx start
