@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+# @TODO: Think about wrapping most of this stuff in a DB transaction..
+
 # Bash script for checking whether WordPress is installed or not
 if ! $(wp core is-installed --allow-root); then
     wp core install  --url="${WP_HOME}" --title="${WP_TITLE}" --admin_user=admin --admin_email=admin@lets-byte.it --allow-root
@@ -21,7 +23,11 @@ wp transient delete --all --allow-root
 # @TODO: Clear Super-Cache
 # @TODO: Clear Twig-Cache
 
+# @TODO: Run the Country-Pages-Generator Command here
+
 # Start nginx
 service nginx start
+
+# @TODO: Start the Cache-Preflight Command here 
 
 exec "$@"
