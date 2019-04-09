@@ -20,8 +20,7 @@ wp plugin activate --all --allow-root
 # Clear Caches
 wp cache flush --allow-root
 wp transient delete --all --allow-root
-# @TODO: Clear Super-Cache
-# @TODO: Clear Twig-Cache
+php bin/console cached-files:clear
 
 # Generate the Country-Page Skeletons in WordPress, if they're not already there
 php bin/console country-pages:generate
