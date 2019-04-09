@@ -28,6 +28,7 @@ php bin/console country-pages:generate
 # Start nginx
 service nginx start
 
-# @TODO: Start the Cache-Preflight Command here 
+# Generate the Country-Page Caches by calling all of them via HTTP
+php bin/console country-pages:pre-flight
 
 exec "$@"
