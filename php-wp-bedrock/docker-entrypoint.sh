@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+# Store the current working directory to pass it to further scripts
+WORKING_DIR="$(pwd)"
+
 # Bash script for checking whether WordPress is installed or not
 if ! $(wp core is-installed --allow-root); then
     wp core install  --url="${WP_HOME}" --title="${WP_TITLE}" --admin_user=admin --admin_email=admin@lets-byte.it --allow-root
@@ -24,8 +27,8 @@ PRE_SCRIPTS_DIR=/var/scripts/pre
 if [ -d "$PRE_SCRIPTS_DIR" ]; then
   PRE_SCRIPTS="$PRE_SCRIPTS_DIR/*.sh"
   for script in $PRE_SCRIPTS; do
-        [[ -f $script && -x $script ]] && bash $script
-  done
+	  [[ -f $script && -x $script ]] && bash $script $WORKING_DIR
+	done
 fi
 
 
