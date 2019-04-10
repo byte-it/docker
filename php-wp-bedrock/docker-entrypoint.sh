@@ -7,7 +7,7 @@ if ! $(wp core is-installed --allow-root); then
 fi
 
 # Make sure an updated WordPress can run its database-update
- wp core update-db --allow-root
+wp core update-db --allow-root
 
 # Make sure our custom Theme is always active 
 wp theme activate ${WP_THEME} --allow-root
@@ -18,15 +18,16 @@ wp plugin activate --all --allow-root
 # Clear Caches
 wp cache flush --allow-root
 wp transient delete --all --allow-root
-php bin/console cached-files:clear
-
+# Call custom scripts here!
+#php bin/console cached-files:clear
 # Generate the Country-Page Skeletons in WordPress, if they're not already there
-php bin/console country-pages:generate
+#php bin/console country-pages:generate
 
 # Start nginx
 service nginx start
 
+# Think about how to do this
 # Generate the Country-Page Caches by calling all of them via HTTP
-php bin/console country-pages:pre-flight
+#php bin/console country-pages:pre-flight
 
 exec "$@"
