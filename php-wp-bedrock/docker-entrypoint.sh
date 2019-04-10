@@ -18,16 +18,18 @@ wp plugin activate --all --allow-root
 # Clear Caches
 wp cache flush --allow-root
 wp transient delete --all --allow-root
-# Call custom scripts here!
-#php bin/console cached-files:clear
-# Generate the Country-Page Skeletons in WordPress, if they're not already there
-#php bin/console country-pages:generate
+
+# Call custom scripts for pre-running here
+PRE_SCRIPTS_DIR=/var/scripts/pre
+if [ -d "$PRE_SCRIPTS_DIR" ]; then
+  PRE_SCRIPTS="$PRE_SCRIPTS_DIR/*.sh"
+  for script in $PRE_SCRIPTS; do
+        [[ -f $script && -x $script ]] && bash $script
+  done
+fi
+
 
 # Start nginx
 service nginx start
-
-# Think about how to do this
-# Generate the Country-Page Caches by calling all of them via HTTP
-#php bin/console country-pages:pre-flight
 
 exec "$@"
