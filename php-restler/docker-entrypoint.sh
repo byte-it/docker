@@ -4,13 +4,6 @@ set -e
 # Store the current working directory to pass it to further scripts
 WORKING_DIR="$(pwd)"
 
-# Fix permissions
-usermod -a -G www-data root
-chgrp -R www-data storage
-
-chown -R www-data:www-data ./storage
-chmod -R 0777 ./storage
-
 # Call custom scripts for pre-running here
 PRE_SCRIPTS_DIR=/var/scripts/pre
 if [ -d "$PRE_SCRIPTS_DIR" ]; then
