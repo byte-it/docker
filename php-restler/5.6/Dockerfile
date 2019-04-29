@@ -1,4 +1,4 @@
-FROM php:5.6.40-fpm-alpine
+FROM php:5.6.40-fpm
 LABEL maintainer="Jan-Moritz Galler <jan@lets-byte.it>"
 
 EXPOSE 80
