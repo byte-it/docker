@@ -18,6 +18,7 @@ before_script:
   - docker build -t ${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${TAG} -f ${TAG}/Dockerfile .
   - docker push ${CI_REGISTRY_IMAGE}/${IMAGE_NAME}:${TAG}
 
+
 # Composer images
 
 .base:php-composer: &php_composer
@@ -44,6 +45,7 @@ php-composer:73:
     IMAGE_NAME: "php-composer"
     TAG: "7.3"
 
+
 # Laravel images
 
 .base:php-laravel: &php_laravel
@@ -69,7 +71,25 @@ php-laravel:73:
     IMAGE_NAME: "php-laravel"
     TAG: "7.3"
 
+
+# Restler images
+
+.base:php-restler: &php_restler
+  script: *build_script
+  stage: build
+  only:
+    changes:
+    - 'php-restler/**/*'
+
+php-restler:56:
+  <<: *php_restler
+  variables:
+    IMAGE_NAME: "php-restler"
+    TAG: "5.6"
+
+
 # Bedrock images
+
 .base:php-wp-bedrock: &php_wp_bedrock
   script: *build_script
   stage: build
