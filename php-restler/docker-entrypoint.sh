@@ -13,7 +13,6 @@ if [ -d "$PRE_SCRIPTS_DIR" ]; then
 	done
 fi
 
-
 # Start nginx
 service nginx start
 
