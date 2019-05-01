@@ -10,11 +10,13 @@ RUN apt-get update && apt-get install -y \
         curl \
         nano \
         nginx \
+        libldap2-dev \
     && docker-php-ext-install -j$(nproc) pdo \
     && docker-php-ext-install -j$(nproc) pdo_mysql \
     && docker-php-ext-install  mbstring \
     && docker-php-ext-install  zip \
-    && docker-php-ext-install  ldap
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
+    && docker-php-ext-install ldap
 
 RUN rm /etc/nginx/sites-enabled/default
 
