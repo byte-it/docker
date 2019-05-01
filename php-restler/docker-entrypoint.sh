@@ -10,7 +10,7 @@ if [ -d "$PRE_SCRIPTS_DIR" ]; then
   PRE_SCRIPTS="$PRE_SCRIPTS_DIR/*.sh"
   for script in $PRE_SCRIPTS; do
 	  [[ -f $script && -x $script ]] && bash $script $WORKING_DIR
-	done
+  done
 fi
 
 # Start nginx
