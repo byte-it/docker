@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) pdo \
     && docker-php-ext-install -j$(nproc) pdo_mysql \
     && docker-php-ext-install  mbstring \
-    && docker-php-ext-install  zip
+    && docker-php-ext-install  zip \
+    && docker-php-ext-install  ldap
 
 RUN rm /etc/nginx/sites-enabled/default
 
