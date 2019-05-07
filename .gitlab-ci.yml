@@ -115,3 +115,19 @@ php-wp-bedrock:73:
 
 
 
+# Drupal images
+
+.base:php-drupal: &php_drupal
+  script: *build_script
+  stage: build
+  only:
+    changes:
+    - 'php-drupal/**/*'
+
+php-drupal:73:
+  <<: *php_drupal
+  variables:
+    IMAGE_NAME: "php-drupal"
+    TAG: "7.3"
+
+
