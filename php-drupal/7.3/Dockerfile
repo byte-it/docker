@@ -31,5 +31,8 @@ COPY ./docker-entrypoint.sh /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
+ENV PRE_SCRIPTS_DIR=/var/scripts/pre
+ENV AFTER_SCRIPTS_DIR=/var/scripts/after
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]

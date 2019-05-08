@@ -1,36 +1,46 @@
-#!/bin/sh
+#!/bin/bash
 
 # Store the current working directory to pass it to further scripts
 WORKING_DIR="$(pwd)"
 
+DRUPAL_INSTALLED=0
+
 php vendor/bin/drush status bootstrap | grep -q Successful
 
-if [[ $0 > 0 ]]
+
+if [ $0 = 0 ]
 then
-    DRUPAL_INSTALLED = 1
+    DRUPAL_INSTALLED=1
+    echo "Drupal is installed"
 else
-    DRUPAL_INSTALLED = 0
+    echo "Drupal isn't installed"
 fi
 
 set -e
 
-PRE_SCRIPTS_DIR=/var/scripts/pre
-AFTER_SCRIPTS_DIR=/var/scripts/after
 
 if [[ -d "$PRE_SCRIPTS_DIR" ]]; then
-  PRE_SCRIPTS="$PRE_SCRIPTS_DIR/*.sh"
-  for script in ${PRE_SCRIPTS}; do
-	  [[ -f ${script} && -x ${script} ]] && bash ${script} ${WORKING_DIR}
-	done
+    PRE_SCRIPTS="$PRE_SCRIPTS_DIR/*.sh"
+
+    for script in ${PRE_SCRIPTS}; do
+        if [[ -f ${script} && -x ${script} ]]; then
+            echo "Execute ${script}"
+            bash ${script} ${WORKING_DIR}
+        fi
+    done
 fi
 
 set -e
 
 # Get a config diff before continuing
-rm config/config-diff.yml
+if [ -f config/config-diff.yml ]
+then
+    rm config/config-diff.yml
+fi
+
 php vendor/bin/drush config:status  --format=yaml 1> config/config-diff.yml
 
-if [[ -s "config/config-diff.yml" ]]
+if [ -s "config/config-diff.yml" ]
 then
     php vendor/bin/drush config:export -y
     exit 10
@@ -53,11 +63,16 @@ php vendor/bin/drush locale:update
 php vendor/bin/drush state:set system.maintenance_mode 0
 
 # Call custom scripts for pre-running here
+
 if [[ -d "$AFTER_SCRIPTS_DIR" ]]; then
-  AFTER_SCRIPTS="$AFTER_SCRIPTS_DIR/*.sh"
-  for script in ${AFTER_SCRIPTS}; do
-	  [[ -f ${script} && -x ${script} ]] && bash ${script} ${WORKING_DIR}
-	done
+    AFTER_SCRIPTS="$AFTER_SCRIPTS_DIR/*.sh"
+
+    for script in ${AFTER_SCRIPTS}; do
+        if [[ -f ${script} && -x ${script} ]]; then
+            echo "Execute ${script}"
+            bash ${script} ${WORKING_DIR}
+        fi
+    done
 fi
 
 # Start nginx
