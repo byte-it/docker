@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
         libzip-dev \
         curl \
         nano \
-        supervisor \
+        mysql-client \
         nginx \
     && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
     && docker-php-ext-install -j$(nproc) pdo \

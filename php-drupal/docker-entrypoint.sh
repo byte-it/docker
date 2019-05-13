@@ -8,7 +8,7 @@ DRUPAL_INSTALLED=0
 php vendor/bin/drush status bootstrap | grep -q Successful
 
 
-if [ $0 = 0 ]
+if [[ $? = 0 ]]
 then
     DRUPAL_INSTALLED=1
     echo "Drupal is installed"
@@ -25,7 +25,8 @@ if [[ -d "$PRE_SCRIPTS_DIR" ]]; then
     for script in ${PRE_SCRIPTS}; do
         if [[ -f ${script} && -x ${script} ]]; then
             echo "Execute ${script}"
-            bash ${script} ${WORKING_DIR}
+            source ${script} ${WORKING_DIR}
+            echo "Finished ${script}"
         fi
     done
 fi
@@ -42,22 +43,24 @@ php vendor/bin/drush config:status  --format=yaml 1> config/config-diff.yml
 
 if [ -s "config/config-diff.yml" ]
 then
-    php vendor/bin/drush config:export -y
-    exit 10
+    php vendor/bin/drush cex --destination ../config/old
 fi
 # Lets get sirius and turn on maintenance
 php vendor/bin/drush state:set system.maintenance_mode 1
 
-# Update config ignore settings first (need drupal console because drush can't import a single file)
-php vendor/bin/drupal config:import:single --file "live/config/sync/config_ignore.settings.yml"
+if [[ DRUPAL_INSTALLED = 1 ]]; then
+    # Update config ignore settings first (need drupal console because drush can't import a single file)
+    php vendor/bin/drupal config:import:single --file "live/config/sync/config_ignore.settings.yml"
 
-# Apply all needed updates
-php vendor/bin/drush config:import -y
+    # Apply all needed updates
+    php vendor/bin/drush config:import -y
+fi
+
 php vendor/bin/drush entity:updates -y
 php vendor/bin/drush updatedb -y
 
 # Load the newest translations
-php vendor/bin/drush locale:update
+#php vendor/bin/drush locale:update
 
 # we're done here, turn it back on
 php vendor/bin/drush state:set system.maintenance_mode 0
@@ -70,7 +73,8 @@ if [[ -d "$AFTER_SCRIPTS_DIR" ]]; then
     for script in ${AFTER_SCRIPTS}; do
         if [[ -f ${script} && -x ${script} ]]; then
             echo "Execute ${script}"
-            bash ${script} ${WORKING_DIR}
+            source ${script} ${WORKING_DIR}
+            echo "Finished ${script}"
         fi
     done
 fi
