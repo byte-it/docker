@@ -21,8 +21,9 @@ RUN rm /etc/nginx/sites-enabled/default
 COPY ./nginx-default.conf /etc/nginx/conf.d/default.conf
 COPY ./fpm.conf /usr/local/etc/php-fpm.d/www.conf
 
-COPY ./docker-entrypoint.sh /usr/local/bin/
+ENV PRE_SCRIPTS_DIR=/var/scripts/pre
 
+COPY ./docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 # Store the current working directory to pass it to further scripts
@@ -17,12 +17,16 @@ php artisan migrate
 php artisan up
 
 # Call custom scripts for pre-running here
-PRE_SCRIPTS_DIR=/var/scripts/pre
-if [ -d "$PRE_SCRIPTS_DIR" ]; then
-  PRE_SCRIPTS="$PRE_SCRIPTS_DIR/*.sh"
-  for script in $PRE_SCRIPTS; do
-	  [[ -f $script && -x $script ]] && bash $script $WORKING_DIR
-	done
+if [[ -d "$PRE_SCRIPTS_DIR" ]]; then
+    PRE_SCRIPTS="$PRE_SCRIPTS_DIR/*.sh"
+
+    for script in ${PRE_SCRIPTS}; do
+        if [[ -f ${script} && -x ${script} ]]; then
+            echo "Execute ${script}"
+            source ${script} ${WORKING_DIR}
+            echo "Finished ${script}"
+        fi
+    done
 fi
 
 # Start nginx
